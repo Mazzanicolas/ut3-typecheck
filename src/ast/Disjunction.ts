@@ -2,6 +2,7 @@ import { Exp } from './ASTNode';
 import { State } from '../interpreter/State';
 import { CheckState } from '../typecheck/CheckState';
 import { WhileType } from '../typecheck/WhileType';
+import { WBoolean } from '../typecheck/WBoolean';
 
 /**
   Representación de conjunciones booleanas (AND).
@@ -29,6 +30,10 @@ export class Disjunction implements Exp {
   }
 
   checktype(checkstate: CheckState): WhileType {
-    return undefined;
+    if(WBoolean.getInstance().isCompatible(this.lhs.checktype(checkstate)) && WBoolean.getInstance().isCompatible(this.rhs.checktype(checkstate))){
+      return WBoolean.getInstance();
+    }
+    checkstate.logError(`La comparacion entre ${this.lhs.checktype(checkstate)} y ${this.rhs.checktype(checkstate)} no es compatible`);
+    return WBoolean.getInstance();
   }
 }

@@ -26,6 +26,6 @@ export class Variable implements Exp {
   }
 
   checktype(checkstate: CheckState): WhileType {
-    return undefined;
+    return checkstate.get(this.id);
   }
 }

@@ -35,6 +35,7 @@ export class Sequence implements Stmt {
   }
 
   checktype(checkstate: CheckState): CheckState {
-    return undefined;
+    for(var i in  this.statements) checkstate = this.statements[i].checktype(checkstate);
+    return checkstate;
   }
 }

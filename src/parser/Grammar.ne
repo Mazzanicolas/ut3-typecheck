@@ -23,8 +23,12 @@ import {
   Substraction,
   TruthValue,
   Variable,
-  WhileDo
+  WhileDo,
+  TypeAssignment
 } from '../ast/AST';
+import {WBoolean} from '../typecheck/WBoolean';
+import {WInteger} from '../typecheck/WInteger';
+import {WNumber} from '../typecheck/WNumber';
 
 import { tokens } from './Tokens';
 import { MyLexer } from './Lexer';
@@ -43,7 +47,8 @@ stmt ->
   | "if" exp "then" stmt                  {% ([, cond, , thenBody]) => (new IfThen(cond, thenBody)) %}
 
 stmtelse ->
-    identifier "=" exp ";"                {% ([id, , exp, ]) => (new Assignment(id, exp)) %}
+    type identifier "=" exp ";"           {% ([type, id, , exp, ]) => (new TypeAssignment(type, id, exp)) %}
+  | identifier "=" exp ";"                {% ([id, , exp, ]) => (new Assignment(id, exp)) %}
   | "{" stmt:* "}"                        {% ([, statements, ]) => (new Sequence(statements)) %}
   | "while" exp "do" stmt                 {% ([, cond, , body]) => (new WhileDo(cond, body)) %}
   | "if" exp "then" stmtelse "else" stmt  {% ([, cond, , thenBody, , elseBody]) => (new IfThenElse(cond, thenBody, elseBody)) %}
@@ -63,7 +68,7 @@ comp ->
   | comp "<" addsub         {% ([lhs, , rhs]) => (new CompareLess(lhs, rhs)) %}
   | comp ">=" addsub        {% ([lhs, , rhs]) => (new CompareGreatOrEqual(lhs, rhs)) %}
   | comp ">" addsub         {% ([lhs, , rhs]) => (new CompareGreat(lhs, rhs)) %}
-  | addsub
+  | addsub                  {% id %}
 
 addsub ->
     addsub "+" muldiv       {% ([lhs, , rhs]) => (new Addition(lhs, rhs)) %}
@@ -96,3 +101,8 @@ number ->
     %integer                {% ([id]) => (id.value) %}
   | %hex                    {% ([id]) => (id.value) %}
   | %float                  {% ([id]) => (id.value) %}
+
+type ->
+   "boolean"                {% () => (WBoolean.getInstance()) %}
+  | "int"                   {% () => (WInteger.getInstance()) %}
+  | "number"                {% () => (WNumber.getInstance()) %}

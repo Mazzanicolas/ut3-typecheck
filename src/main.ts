@@ -21,7 +21,7 @@ while (true) {
   const lexer = new MyLexer(tokens);
   const parser = new Parser(ParserRules, ParserStart, { lexer });
 
-  const input = readlineSync.question('> ');
+  const input = readlineSync.question('>>> ');
 
   try {
     // Parse user input
@@ -38,6 +38,8 @@ while (true) {
         const node = nodes[0];
         state = node.checktype(state);
         console.log(`\n${state.toString()}`);
+        console.log(`\n${state.errorLog.toString()}`);
+        state.errorLog = [];
         break;
       }
       default: {

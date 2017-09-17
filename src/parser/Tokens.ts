@@ -29,6 +29,9 @@ export const tokens = {
   'else':       'else',
   'true':       'true',
   'false':      'false',
+  'boolean':    'boolean',
+  'int':        'int',
+  'number':     'number',
 
   // Atoms
   float:        { match: /[0-9]+\.[0-9]+(?:[eE][-+]?[0-9]+)?/, value: (x: string) => (parseFloat(x)) },

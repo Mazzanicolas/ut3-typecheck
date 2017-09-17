@@ -2,6 +2,7 @@
 export * from './ASTNode';
 
 // Statements
+export * from './TypeAssignment';
 export * from './Assignment';
 export * from './IfThenElse';
 export * from './IfThen';
