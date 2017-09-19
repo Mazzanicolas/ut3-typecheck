@@ -2,6 +2,7 @@ import { Exp, Stmt } from './ASTNode';
 import { State } from '../interpreter/State';
 import { CheckState } from '../typecheck/CheckState';
 import { WhileType } from '../typecheck/WhileType';
+import { WUndefined } from '../typecheck/WUndefined';
 
 /**
   Representación de las asignaciones de valores a variables.
@@ -29,6 +30,16 @@ export class Assignment implements Stmt {
   }
 
   checktype(checkstate: CheckState): CheckState {
-    return undefined;
+    if(checkstate.get(this.id)!=null){
+      if(checkstate.get(this.id).isCompatible(this.exp.checktype(checkstate))){
+        checkstate.set(this.id,this.exp.checktype(checkstate));
+      }else{
+        checkstate.logError(`La asignacion no es compatible con ${this.exp.checktype(checkstate)}`);
+        checkstate.set(this.id,checkstate.get(this.id));
+      }
+      return checkstate;
+    }
+    checkstate.set(this.id,WUndefined.getInstance());
+    return checkstate;
   }
 }
